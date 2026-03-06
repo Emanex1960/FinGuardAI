@@ -160,16 +160,23 @@ def dashboard():
     risk_score = round((high_risk / len(df)) * 100, 2)
 
     # -------------------- COMPANY FRAUD VULNERABILITY INDEX --------------------
-    cfvi = min(100, round((high_risk * 1.5 + medium_risk * 0.8), 2))
 
-    if cfvi < 30:
-        risk_level_label = "Low Organizational Risk"
+total_transactions = len(df)
 
-    elif cfvi < 60:
-        risk_level_label = "Moderate Organizational Risk"
+weighted_risk = (high_risk * 3) + (medium_risk * 2) + (low_risk * 1)
 
-    else:
-        risk_level_label = "High Organizational Risk"
+max_possible_risk = total_transactions * 3
+
+cfvi = round((weighted_risk / max_possible_risk) * 100, 2)
+
+if cfvi < 35:
+    risk_level_label = "Low Organizational Risk"
+
+elif cfvi < 65:
+    risk_level_label = "Moderate Organizational Risk"
+
+else:
+    risk_level_label = "High Organizational Risk"
 
     # -------------------- METRICS --------------------
     col1, col2, col3, col4 = st.columns(4)
@@ -292,3 +299,4 @@ if not st.session_state.authenticated:
 
 else:
     dashboard()
+
