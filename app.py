@@ -21,6 +21,71 @@ st.markdown("""
 .stProgress > div > div > div > div {
     background-color: #00FFB3;
 }
+
+/* Ticker */
+.ticker-container{
+width:100%;
+overflow:hidden;
+background:#111;
+border:1px solid #00FFB3;
+margin-top:10px;
+}
+
+.ticker-text{
+display:inline-block;
+white-space:nowrap;
+padding-left:100%;
+animation:ticker 25s linear infinite;
+color:#00FFB3;
+font-weight:bold;
+font-size:16px;
+}
+
+@keyframes ticker{
+0%{transform:translateX(0);}
+100%{transform:translateX(-100%);}
+}
+
+/* Threat Pulse */
+
+.threat-box{
+background:#0E1117;
+border:1px solid #00FFB3;
+padding:20px;
+margin-top:10px;
+text-align:center;
+border-radius:10px;
+}
+
+.pulse{
+width:20px;
+height:20px;
+background:#00FFB3;
+border-radius:50%;
+margin:auto;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{
+transform:scale(.8);
+box-shadow:0 0 0 0 rgba(0,255,179,0.7);
+}
+70%{
+transform:scale(1);
+box-shadow:0 0 0 10px rgba(0,255,179,0);
+}
+100%{
+transform:scale(.8);
+}
+}
+
+.threat-text{
+margin-top:10px;
+font-size:16px;
+font-weight:bold;
+color:#00FFB3;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -30,6 +95,7 @@ if "authenticated" not in st.session_state:
 
 # -------------------- LOGIN SYSTEM --------------------
 def login():
+
     st.markdown("<h1 style='text-align: center;'>🔐 FinGuard AI Secure Access</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align: center;'>Enterprise Financial Intelligence Portal</h4>", unsafe_allow_html=True)
     st.markdown("---")
@@ -37,16 +103,20 @@ def login():
     col1, col2, col3 = st.columns([1,2,1])
 
     with col2:
+
         st.subheader("Authorized Personnel Login")
 
         username = st.text_input("Company Email")
         password = st.text_input("Password", type="password")
 
         if st.button("Login Securely"):
+
             if username == "admin@finguardai.com" and password == "FinGuard2026":
+
                 st.session_state.authenticated = True
                 st.success("Authentication Successful. Redirecting to dashboard...")
                 st.rerun()
+
             else:
                 st.error("Invalid credentials. Access restricted.")
 
@@ -64,11 +134,39 @@ def dashboard():
         st.rerun()
 
     # -------------------- HEADER --------------------
+
     st.title("🔐 FinGuard AI")
     st.subheader("AI-Powered Financial Fraud & Insider Threat Intelligence Platform")
+
+    # -------------------- CYBER FRAUD TICKER --------------------
+
+    st.markdown("""
+<div class="ticker-container">
+<div class="ticker-text">
+🚨 CYBER FRAUD ALERT: Suspicious offshore transfer detected | 
+⚠ Insider access anomaly in Finance Department | 
+🛡 AI Monitoring 300+ Transactions in Real-Time | 
+📡 FinGuard Threat Intelligence Engine Active | 
+🔎 Behavioral anomaly detected in executive account
+</div>
+</div>
+""", unsafe_allow_html=True)
+
+    # -------------------- THREAT DETECTION ANIMATION --------------------
+
+    st.markdown("""
+<div class="threat-box">
+<div class="pulse"></div>
+<div class="threat-text">
+LIVE AI THREAT DETECTION ENGINE MONITORING TRANSACTIONS
+</div>
+</div>
+""", unsafe_allow_html=True)
+
     st.markdown("---")
 
     # -------------------- SIDEBAR --------------------
+
     st.sidebar.header("🏢 Company Settings")
 
     company = st.sidebar.selectbox(
@@ -83,16 +181,15 @@ def dashboard():
         18000
     )
 
-    # -------- NEW CFVI SIMULATION SLIDER --------
     cfvi_slider = st.sidebar.slider(
         "Fraud Vulnerability Simulation (CFVI)",
         0,
         100,
-        50,
-        help="Move this slider during the demo to simulate organizational fraud vulnerability in real time."
+        50
     )
 
     # -------------------- DATA GENERATION --------------------
+
     def generate_data(threshold):
 
         users = ["Finance Lead","Accountant","HR Manager","CEO","IT Admin"]
@@ -141,17 +238,19 @@ def dashboard():
     df = generate_data(threshold)
 
     # -------------------- RISK CALCULATIONS --------------------
+
     high_risk = len(df[df["Risk Level"]=="High"])
     medium_risk = len(df[df["Risk Level"]=="Medium"])
     low_risk = len(df[df["Risk Level"]=="Low"])
 
     risk_score = round((high_risk/len(df))*100,2)
 
-    # -------------------- CFVI CALCULATION --------------------
+    # -------------------- CFVI --------------------
+
     base_cfvi = min(100, round((high_risk*1.2 + medium_risk*0.6),2))
 
-    # Combine real risk + slider simulation
     cfvi = round((base_cfvi * 0.6) + (cfvi_slider * 0.4),2)
+
     cfvi = min(100, cfvi)
 
     if cfvi < 30:
@@ -161,11 +260,13 @@ def dashboard():
     else:
         risk_level_label = "High Organizational Risk"
 
-    # -------------------- LIVE THREAT ALERT --------------------
+    # -------------------- LIVE ALERT --------------------
+
     if high_risk > 20:
         st.error("🚨 LIVE THREAT ALERT: Abnormally high volume of suspicious transactions detected!")
 
     # -------------------- METRICS --------------------
+
     col1,col2,col3,col4 = st.columns(4)
 
     col1.metric("Total Transactions",len(df))
@@ -176,14 +277,17 @@ def dashboard():
     st.markdown("---")
 
     # -------------------- CFVI --------------------
+
     st.subheader("🧠 Company Fraud Vulnerability Index (CFVI)")
 
     colA,colB = st.columns(2)
 
     colA.metric("Organizational Risk Score",f"{cfvi}/100")
+
     colB.info(risk_level_label)
 
     # -------------------- RISK GAUGE --------------------
+
     st.subheader("📊 Organizational Risk Gauge")
 
     st.progress(cfvi/100)
@@ -197,128 +301,16 @@ def dashboard():
 
     st.markdown("---")
 
-    # -------------------- BOARD INSIGHT --------------------
-    potential_leakage = high_risk * threshold
-
-    st.subheader("📌 Board-Level Financial Risk Insight")
-
-    st.warning(
-        f"If current high-risk patterns persist, estimated financial exposure may reach **${potential_leakage:,}**."
-    )
-
-    st.markdown("---")
-
-    # -------------------- RISK DISTRIBUTION --------------------
-    st.subheader("📊 Transaction Risk Distribution")
-
-    risk_counts = df["Risk Level"].value_counts()
-
-    fig,ax = plt.subplots()
-    ax.bar(risk_counts.index,risk_counts.values)
-
-    st.pyplot(fig)
-
-    st.markdown("---")
-
-    # -------------------- REGIONAL FRAUD --------------------
-    st.subheader("🌍 Regional High-Risk Concentration")
-
-    region_risk = df[df["Risk Level"]=="High"].groupby("Location").size()
-
-    if not region_risk.empty:
-        fig2,ax2 = plt.subplots()
-        ax2.bar(region_risk.index,region_risk.values)
-        st.pyplot(fig2)
-
-    st.markdown("---")
-
     # -------------------- FLAGGED TRANSACTIONS --------------------
+
     st.subheader("🚨 Flagged Transactions Intelligence")
 
     flagged = df[df["Risk Level"]!="Low"]
 
     st.dataframe(flagged,use_container_width=True)
 
-    st.markdown("---")
-
-    # -------------------- FRAUD PROBABILITY PREDICTOR --------------------
-    st.subheader("🧠 Fraud Probability Predictor")
-
-    fraud_probability = round((len(flagged)/len(df))*100,2)
-
-    st.metric("Estimated Fraud Probability",f"{fraud_probability}%")
-
-    st.markdown("---")
-
-    # -------------------- FRAUD TREND OVER TIME --------------------
-    st.subheader("📈 Fraud Risk Trend Over Time")
-
-    df["Month"] = df["Date"].dt.to_period("M").astype(str)
-
-    monthly_risk = df.groupby("Month")["Amount ($)"].mean().reset_index()
-
-    st.line_chart(monthly_risk.set_index("Month"))
-
-    st.markdown("---")
-
-    # -------------------- FRAUD HEATMAP BY DEPARTMENT --------------------
-    st.subheader("🔥 Fraud Concentration by Department")
-
-    dept_counts = flagged["Department"].value_counts()
-
-    st.bar_chart(dept_counts)
-
-    st.markdown("---")
-
-    # -------------------- AI FRAUD INVESTIGATOR --------------------
-    st.subheader("🤖 AI Fraud Investigator")
-
-    if st.button("Run AI Fraud Investigation"):
-
-        if len(flagged)==0:
-            st.success("No suspicious patterns detected.")
-
-        else:
-
-            top_location = flagged["Location"].value_counts().idxmax()
-            top_role = flagged["User Role"].value_counts().idxmax()
-            avg_amount = int(flagged["Amount ($)"].mean())
-
-            report = f"""
-AI ANALYSIS REPORT
-
-Most suspicious transactions originate from **{top_location}**
-
-Most involved role: **{top_role}**
-
-Average suspicious transaction amount: **${avg_amount:,}**
-
-Recommendation:
-Conduct targeted internal audit and strengthen transaction approval controls.
-"""
-
-            st.info(report)
-
-    st.markdown("---")
-
-    # -------------------- EXECUTIVE SUMMARY --------------------
-    st.subheader("🧾 Executive Risk Summary")
-
-    summary = f"""
-FinGuard AI analyzed **{len(df)} transactions**.
-
-**{len(flagged)} transactions were flagged** as suspicious.
-
-The current **CFVI is {cfvi}/100**, indicating **{risk_level_label}**.
-
-Estimated fraud probability is **{fraud_probability}%**.
-
-This suggests increased financial monitoring and internal control review may be necessary.
-"""
-
-    st.info(summary)
-
     # -------------------- DOWNLOAD REPORT --------------------
+
     st.download_button(
         "📂 Download Fraud Report",
         df.to_csv(index=False),
@@ -327,6 +319,7 @@ This suggests increased financial monitoring and internal control review may be 
     )
 
 # -------------------- APP ROUTING --------------------
+
 if not st.session_state.authenticated:
     login()
 else:
